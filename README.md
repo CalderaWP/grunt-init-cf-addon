@@ -12,7 +12,7 @@ Once grunt-init is installed, place this template in your `~/.grunt-init/` direc
 ### Clone
 
 ```
-git clone !url!
+git clone https://github.com/CalderaWP/grunt-init-cf-addon
 ```
 
 
