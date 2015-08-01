@@ -1,5 +1,5 @@
 Plugin Name -- {%= title %}
-Text domain -- {%= prefix %}
+Text domain -- {%= text_domain %}
 Function prefix -- {%= prefix %}
 Class prefix - n/a
 Root namespace -- n/a
