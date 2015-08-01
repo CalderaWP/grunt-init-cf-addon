@@ -1,15 +1,14 @@
 /**
- * grunt-wp-plugin
- * https://github.com/10up/grunt-wp-plugin
+ * grunt-cf-addon
  *
- * Copyright (c) 2013 Eric Mann, 10up
+ * Based on https://github.com/10up/grunt-wp-plugin Copyright (c) 2013 Eric Mann, 10up
  * Licensed under the MIT License
  */
 
 'use strict';
 
 // Basic template description
-exports.description = 'Create a WordPress plugin.';
+exports.description = 'Create a Caldera Forms add-on plugin.';
 
 // Template-specific notes to be displayed before question prompts.
 exports.notes = '';
@@ -28,38 +27,32 @@ exports.template = function( grunt, init, done ) {
 		{
 			name   : 'prefix',
 			message: 'PHP function prefix (alpha and underscore characters only)',
-			default: 'wpplugin'
+			default: 'cf-x'
 		},
-		init.prompt( 'description', 'The best WordPress extension ever made!' ),
-		init.prompt( 'homepage', 'http://wordpress.org/plugins' ),
-		init.prompt( 'author_name' ),
-		init.prompt( 'author_email' ),
-		init.prompt( 'author_url' ),
-		{
-			name: 'css_type',
-			message: 'CSS Preprocessor: Will you use "Sass", "LESS", or "none" for CSS with this project?',
-			default: 'Sass'
-		}
+		init.prompt( 'description', 'X for Caldera Forms' ),
+		init.prompt( 'homepage', 'https://calderawp.com' ),
+		init.prompt( 'author_name', 'Josh Pollock for CalderaWP LLC' ),
+		init.prompt( 'author_email', 'Josh@CalderaWP.com' ),
+		init.prompt( 'author_url', 'https://CalderaWP.com' ),
+		init.prompt( 'slug', 'cf-something' ),
 	], function( err, props ) {
 		props.keywords = [];
 		props.version = '0.1.0';
 		props.devDependencies = {
-			'grunt': '~0.4.1',
-			'grunt-contrib-concat':   '~0.1.2',
-			'grunt-contrib-uglify':   '~0.1.1',
-			'grunt-contrib-cssmin':   '~0.6.0',
-			'grunt-contrib-jshint':   '~0.1.1',
-			'grunt-contrib-nodeunit': '~0.1.2',
-			'grunt-contrib-watch':    '~0.2.0',
-			'grunt-contrib-clean':    '~0.5.0',
-			'grunt-contrib-copy':     '~0.4.1',
-			'grunt-contrib-compress': '~0.5.2'
+			"grunt": "~0.4.2",
+			"grunt-cli": "~0.1.11",
+			"grunt-contrib-clean": "^0.6.0",
+			"grunt-contrib-compress": "^0.13.0",
+			"grunt-contrib-copy": "^0.7.0",
+			"grunt-git": "^0.3.3",
+			"grunt-shell": "^1.1.1",
+			"grunt-text-replace": "^0.4.0"
 		};
 		
 		// Sanitize names where we need to for PHP/JS
 		props.name = props.title.replace( /\s+/g, '-' ).toLowerCase();
 		// Development prefix (i.e. to prefix PHP function names, variables)
-		props.prefix = props.prefix.replace('/[^a-z_]/i', '').toLowerCase();
+		props.prefix = props.prefix.replace('/[^a-z_]/i', '').replace('-', '_' ).toLowerCase();
 		// Development prefix in all caps (e.g. for constants)
 		props.prefix_caps = props.prefix.toUpperCase();
 		// An additional value, safe to use as a JavaScript identifier.
@@ -68,33 +61,11 @@ exports.template = function( grunt, init, done ) {
 		props.js_test_safe_name = props.js_safe_name === 'test' ? 'myTest' : props.js_safe_name;
 		props.js_safe_name_caps = props.js_safe_name.toUpperCase();
 
+		props.text_domain = props.prefix.replace( '_', '-' );
+
 		// Files to copy and process
 		var files = init.filesToCopy( props );
 
-		switch( props.css_type.toLowerCase()[0] ) {
-			case 'l':
-				delete files[ 'assets/css/sass/' + props.js_safe_name + '.scss'];
-				delete files[ 'assets/css/src/' + props.js_safe_name + '.css' ];
-				
-				props.devDependencies["grunt-contrib-less"] = "~0.5.0";
-				props.css_type = 'less';
-				break;
-			case 'n':
-			case undefined:
-				delete files[ 'assets/css/less/' + props.js_safe_name + '.less'];
-				delete files[ 'assets/css/sass/' + props.js_safe_name + '.scss'];
-				
-				props.css_type = 'none';
-				break;
-			// SASS is the default
-			default:
-				delete files[ 'assets/css/less/' + props.js_safe_name + '.less'];
-				delete files[ 'assets/css/src/' + props.js_safe_name + '.css' ];
-				
-				props.devDependencies["grunt-contrib-sass"] = "~0.2.2";
-				props.css_type = 'sass';
-				break;
-		}
 		
 		console.log( files );
 		

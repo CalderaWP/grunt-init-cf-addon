@@ -1,0 +1,6 @@
+Plugin Name -- {%= title %}
+Text domain -- {%= prefix %}
+Function prefix -- {%= prefix %}
+Class prefix - n/a
+Root namespace -- n/a
+Filter Prefix -- n/a

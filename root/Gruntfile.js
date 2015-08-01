@@ -1,201 +1,147 @@
-module.exports = function( grunt ) {
+module.exports = function (grunt) {
 
-	// Project configuration
-	grunt.initConfig( {
-		pkg:    grunt.file.readJSON( 'package.json' ),
-		concat: {
-			options: {
-				stripBanners: true,
-				banner: '/*! <%= pkg.title %> - v<%= pkg.version %>\n' +
-					' * <%= pkg.homepage %>\n' +
-					' * Copyright (c) <%= grunt.template.today("yyyy") %>;' +
-					' * Licensed GPLv2+' +
-					' */\n'
-			},
-			{%= js_safe_name %}: {
-				src: [
-					'assets/js/src/{%= js_safe_name %}.js'
-				],
-				dest: 'assets/js/{%= js_safe_name %}.js'
-			}
-		},
-		jshint: {
-			all: [
-				'Gruntfile.js',
-				'assets/js/src/**/*.js',
-				'assets/js/test/**/*.js'
-			],
-			options: {
-				curly:   true,
-				eqeqeq:  true,
-				immed:   true,
-				latedef: true,
-				newcap:  true,
-				noarg:   true,
-				sub:     true,
-				undef:   true,
-				boss:    true,
-				eqnull:  true,
-				globals: {
-					exports: true,
-					module:  false
-				}
-			}		
-		},
-		uglify: {
-			all: {
-				files: {
-					'assets/js/{%= js_safe_name %}.min.js': ['assets/js/{%= js_safe_name %}.js']
-				},
-				options: {
-					banner: '/*! <%= pkg.title %> - v<%= pkg.version %>\n' +
-						' * <%= pkg.homepage %>\n' +
-						' * Copyright (c) <%= grunt.template.today("yyyy") %>;' +
-						' * Licensed GPLv2+' +
-						' */\n',
-					mangle: {
-						except: ['jQuery']
-					}
-				}
-			}
-		},
-		test:   {
-			files: ['assets/js/test/**/*.js']
-		},
-		{% if ('sass' === css_type) { %}
-		sass:   {
-			all: {
-				files: {
-					'assets/css/{%= js_safe_name %}.css': 'assets/css/sass/{%= js_safe_name %}.scss'
-				}
-			}
-		},
-		{% } else if ('less' === css_type) { %}
-		less:   {
-			all: {
-				files: {
-					'assets/css/{%= js_safe_name %}.css': 'assets/css/less/{%= js_safe_name %}.less'
-				}
-			}		
-		},
-		{% } %}
-		cssmin: {
-			options: {
-				banner: '/*! <%= pkg.title %> - v<%= pkg.version %>\n' +
-					' * <%= pkg.homepage %>\n' +
-					' * Copyright (c) <%= grunt.template.today("yyyy") %>;' +
-					' * Licensed GPLv2+' +
-					' */\n'
-			},
-			minify: {
-				expand: true,
-				{% if ('sass' === css_type || 'less' === css_type) { %}
-				cwd: 'assets/css/',				
-				src: ['{%= js_safe_name %}.css'],
-				{% } else { %}
-				cwd: 'assets/css/src/',
-				src: ['{%= js_safe_name %}.css'],
-				{% } %}
-				dest: 'assets/css/',
-				ext: '.min.css'
-			}
-		},
-		watch:  {
-			{% if ('sass' === css_type) { %}
-			sass: {
-				files: ['assets/css/sass/*.scss'],
-				tasks: ['sass', 'cssmin'],
-				options: {
-					debounceDelay: 500
-				}
-			},
-			{% } else if ('less' === css_type) { %}
-			less: {
-				files: ['assets/css/less/*.less'],
-				tasks: ['less', 'cssmin'],
-				options: {
-					debounceDelay: 500
-				}
-			},
-			{% } else { %}
-			styles: {
-				files: ['assets/css/src/*.css'],
-				tasks: ['cssmin'],
-				options: {
-					debounceDelay: 500
-				}
-			},
-			{% } %}
-			scripts: {
-				files: ['assets/js/src/**/*.js', 'assets/js/vendor/**/*.js'],
-				tasks: ['jshint', 'concat', 'uglify'],
-				options: {
-					debounceDelay: 500
-				}
-			}
-		},
-		clean: {
-			main: ['release/<%= pkg.version %>']
-		},
-		copy: {
-			// Copy the plugin to a versioned release directory
-			main: {
-				src:  [
-					'**',
-					'!node_modules/**',
-					'!release/**',
-					'!.git/**',
-					'!.sass-cache/**',
-					'!css/src/**',
-					'!js/src/**',
-					'!img/src/**',
-					'!Gruntfile.js',
-					'!package.json',
-					'!.gitignore',
-					'!.gitmodules'
-				],
-				dest: 'release/<%= pkg.version %>/'
-			}		
-		},
-		compress: {
-			main: {
-				options: {
-					mode: 'zip',
-					archive: './release/{%= js_safe_name %}.<%= pkg.version %>.zip'
-				},
-				expand: true,
-				cwd: 'release/<%= pkg.version %>/',
-				src: ['**/*'],
-				dest: '{%= js_safe_name %}/'
-			}		
-		}
-	} );
-	
-	// Load other tasks
-	grunt.loadNpmTasks('grunt-contrib-jshint');
-	grunt.loadNpmTasks('grunt-contrib-concat');
-	grunt.loadNpmTasks('grunt-contrib-uglify');
-	grunt.loadNpmTasks('grunt-contrib-cssmin');
-	{% if ('sass' === css_type) { %}
-	grunt.loadNpmTasks('grunt-contrib-sass');
-	{% } else if ('less' === css_type) { %}
-	grunt.loadNpmTasks('grunt-contrib-less');
-	{% } %}
-	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks( 'grunt-contrib-clean' );
-	grunt.loadNpmTasks( 'grunt-contrib-copy' );
-	grunt.loadNpmTasks( 'grunt-contrib-compress' );
-	
-	// Default task.
-	{% if ('sass' === css_type) { %}
-	grunt.registerTask( 'default', ['jshint', 'concat', 'uglify', 'sass', 'cssmin'] );
-	{% } else if ('less' === css_type) { %}
-	grunt.registerTask( 'default', ['jshint', 'concat', 'uglify', 'less', 'cssmin'] );
-	{% } else { %}
-	grunt.registerTask( 'default', ['jshint', 'concat', 'uglify', 'cssmin'] );
-	{% } %}
-	
-	grunt.registerTask( 'build', ['default', 'clean', 'copy', 'compress'] );
 
-	grunt.util.linefeed = '\n';
+    // Project configuration.
+    grunt.initConfig({
+        pkg     : grunt.file.readJSON( 'package.json' ),
+        shell: {
+            composer: {
+                command: 'composer update'
+            }
+        },
+        clean: {
+            post_build: [
+                'build/'
+            ],
+            pre_compress: [
+                'build/releases'
+            ]
+        },
+        run: {
+            tool: {
+                cmd: './composer'
+            }
+        },
+        copy: {
+            build: {
+                options : {
+                    mode :true
+                },
+                src: [
+                    '**',
+                    '!node_modules/**',
+                    '!releases',
+                    '!releases/**',
+                    '!.git/**',
+                    '!Gruntfile.js',
+                    '!package.json',
+                    '!.gitignore',
+                    '!.gitmodules',
+                    '!.gitattributes',
+                    '!composer.lock',
+                    '!naming-conventions.txt',
+                    '!how-to-grunt.md'
+                ],
+                dest: 'build/<%= pkg.name %>/'
+            }
+        },
+        compress: {
+            main: {
+                options: {
+                    mode: 'zip',
+                    archive: 'releases/<%= pkg.name %>-<%= pkg.version %>.zip'
+                },
+                expand: true,
+                cwd: 'build/',
+                src: [
+                    '**/*',
+                    '!build/*'
+                ]
+            }
+        },
+        gitadd: {
+            add_zip: {
+                options: {
+                    force: true
+                },
+                files: {
+                    src: [ 'releases/<%= pkg.name %>-<%= pkg.version %>.zip' ]
+                }
+            }
+        },
+        gittag: {
+            addtag: {
+                options: {
+                    tag: '<%= pkg.version %>',
+                    message: 'Version <%= pkg.version %>'
+                }
+            }
+        },
+        gitcommit: {
+            commit: {
+                options: {
+                    message: 'Version <%= pkg.version %>',
+                    noVerify: true,
+                    noStatus: false,
+                    allowEmpty: true
+                },
+                files: {
+                    src: [ 'package.json', 'readme.txt', 'plugin.php', 'releases/<%= pkg.name %>-<%= pkg.version %>.zip' ]
+                }
+            }
+        },
+        gitpush: {
+            push: {
+                options: {
+                    tags: true,
+                    remote: 'origin',
+                    branch: 'master'
+                }
+            }
+        },
+        replace: {
+            readme_txt: {
+                src: [ 'readme.txt' ],
+                overwrite: true,
+                replacements: [{
+                    from: /Stable tag: (.*)/,
+                    to: "Stable tag: <%= pkg.version %>"
+                }]
+
+            },
+            core_file: {
+                src: [ 'plugin.php' ],
+                overwrite: true,
+                replacements: [{
+                    from: /Version:\s*(.*)/,
+                    to: "Version: <%= pkg.version %>"
+                }, {
+                    from: /define\(\s*'{%= prefix_caps %}_VER',\s*'(.*)'\s*\);/,
+                    to: "define( '{%= prefix_caps %}_VER', '<%= pkg.version %>' );"
+                }]
+            }
+        }
+
+    });
+
+    //load modules
+    grunt.loadNpmTasks( 'grunt-contrib-compress' );
+    grunt.loadNpmTasks( 'grunt-contrib-clean' );
+    grunt.loadNpmTasks( 'grunt-contrib-copy' );
+    grunt.loadNpmTasks( 'grunt-git' );
+    grunt.loadNpmTasks( 'grunt-text-replace' );
+    grunt.loadNpmTasks( 'grunt-shell');
+
+
+    //register default task
+
+    //release tasks
+    grunt.registerTask( 'version_number', [ 'replace:readme_txt', 'replace:core_file' ] );
+    grunt.registerTask( 'pre_vcs', [ 'version_number', 'shell:composer', 'copy', 'compress' ] );
+    grunt.registerTask( 'do_git', [ 'gitadd', 'gitcommit', 'gittag', 'gitpush' ] );
+    grunt.registerTask( 'just_build', [ 'shell:composer', 'copy', 'compress' ] );
+
+    grunt.registerTask( 'release', [ 'pre_vcs', 'do_git', 'clean:post_build' ] );
+
+
 };

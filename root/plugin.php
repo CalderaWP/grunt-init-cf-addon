@@ -7,12 +7,12 @@
  * Author:      {%= author_name %}
  * Author URI:  {%= author_url %}
  * License:     GPLv2+
- * Text Domain: {%= prefix %}
+ * Text Domain: {%= text_domain %}
  * Domain Path: /languages
  */
 
 /**
- * Copyright (c) {%= grunt.template.today('yyyy') %} {%= author_name %} (email : {%= author_email %})
+ * Copyright (c) {%= grunt.template.today('yyyy') %} {%= author_name %} (email : {%= author_email %}) for CalderaWP LLC
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License, version 2 or, at
@@ -29,50 +29,42 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/**
- * Built using grunt-wp-plugin
- * Copyright (c) 2013 10up, LLC
- * https://github.com/10up/grunt-wp-plugin
- */
 
-// Useful global constants
-define( '{%= prefix_caps %}_VERSION', '0.1.0' );
+/**
+ * Define constants
+ */
+define( '{%= prefix_caps %}_VER', '0.1.0' );
 define( '{%= prefix_caps %}_URL',     plugin_dir_url( __FILE__ ) );
 define( '{%= prefix_caps %}_PATH',    dirname( __FILE__ ) . '/' );
+define( '{%= prefix_caps %}_CORE',    dirname( __FILE__ )  );
 
 /**
  * Default initialization for the plugin:
  * - Registers the default textdomain.
  */
-function {%= prefix %}_init() {
-	$locale = apply_filters( 'plugin_locale', get_locale(), '{%= prefix %}' );
-	load_textdomain( '{%= prefix %}', WP_LANG_DIR . '/{%= prefix %}/{%= prefix %}-' . $locale . '.mo' );
-	load_plugin_textdomain( '{%= prefix %}', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+function {%= prefix %}_init_text_domain() {
+	load_plugin_textdomain( '{%= text_domain %}', FALSE, {%= prefix_caps %}_PATH . 'languages' );
 }
 
 /**
- * Activate the plugin
+ * Include Files
  */
-function {%= prefix %}_activate() {
-	// First load the init scripts in case any rewrite functionality is being loaded
-	{%= prefix %}_init();
+// load dependencies
+include_once CF_{%= prefix_caps %}_PATH . 'vendor/autoload.php';
 
-	flush_rewrite_rules();
-}
-register_activation_hook( __FILE__, '{%= prefix %}_activate' );
+// pull in the functions file
+include CF_{%= prefix_caps %}_PATH . 'includes/functions.php';
 
 /**
- * Deactivate the plugin
- * Uninstall routines should be in uninstall.php
+ * Hooks
  */
-function {%= prefix %}_deactivate() {
+//register text domain
+add_action( 'init', '{%= prefix %}_init_text_domain()' );
 
-}
-register_deactivation_hook( __FILE__, '{%= prefix %}_deactivate' );
+// add filter to register addon with Caldera Forms
+add_filter('caldera_forms_get_form_processors', '{%= prefix %}_register');
 
-// Wireup actions
-add_action( 'init', '{%= prefix %}_init' );
+// filter to initialize the license system
+add_action( 'admin_init', '{%= prefix %}_init_license' );
 
-// Wireup filters
 
-// Wireup shortcodes
