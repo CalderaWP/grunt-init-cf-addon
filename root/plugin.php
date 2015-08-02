@@ -50,10 +50,10 @@ function {%= prefix %}_init_text_domain() {
  * Include Files
  */
 // load dependencies
-include_once CF_{%= prefix_caps %}_PATH . 'vendor/autoload.php';
+include_once {%= prefix_caps %}_PATH . 'vendor/autoload.php';
 
 // pull in the functions file
-include CF_{%= prefix_caps %}_PATH . 'includes/functions.php';
+include {%= prefix_caps %}_PATH . 'includes/functions.php';
 
 /**
  * Hooks
