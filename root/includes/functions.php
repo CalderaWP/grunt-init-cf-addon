@@ -91,3 +91,26 @@ function {%= prefix %}_init_license(){
 	new \calderawp\licensing_helper\licensing( $plugin );
 
 }
+
+
+/**
+ * Add our example form
+ *
+ * @uses "caldera_forms_get_form_templates"
+ *
+ * @since 0.1.0
+ *
+ * @param array $forms Example forms.
+ *
+ * @return array
+ */
+function {%= prefix %}_example_form( $forms ) {
+	$forms['{%= prefix %}']	= array(
+		'name'	=>	__( '{%= title %} Example', '{%= text_domain %}' ),
+		'template'	=>	include {%= prefix_caps %}_PATH . 'includes/templates/example.php'
+	);
+
+	return $forms;
+
+}
+
