@@ -59,7 +59,7 @@ include {%= prefix_caps %}_PATH . 'includes/functions.php';
  * Hooks
  */
 //register text domain
-add_action( 'init', '{%= prefix %}_init_text_domain()' );
+add_action( 'init', '{%= prefix %}_init_text_domain' );
 
 // add filter to register addon with Caldera Forms
 add_filter('caldera_forms_get_form_processors', '{%= prefix %}_register');
