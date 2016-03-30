@@ -68,4 +68,4 @@ add_filter('caldera_forms_get_form_processors', '{%= prefix %}_register');
 add_action( 'admin_init', '{%= prefix %}_init_license' );
 
 //add our example form
-add_filter( 'caldera_forms_get_form_templates', 'cf_braintree_example_form' );
+add_filter( 'caldera_forms_get_form_templates', '{%= prefix %}_example_form' );
