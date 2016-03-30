@@ -40,17 +40,37 @@ function {%= prefix %}_register($processors){
 
 /**
  * Pre-Proccess {%= title %} proccessor
+ * 
+ * USE THIS FOR YOUR VALIDATION! Most payment processors and other 3rd party API integrations do their work at pre-process so they can break form processing if API returns an error.
  *
  * @since 0.1.0
  *
  * @param array $config Processor config
  * @param array $form Form config
+ * @param string $process_id Unique process ID
  *
  * @return array
  */
-function {%= prefix %}_pre_process( $config, $form ) {
-
-	return $config;
+function {%= prefix %}_pre_process( $config, $form, $process_id) {
+	//create processor object
+	$processor = new Caldera_Forms_Processor_Get_Data( $config, $form, cf_members_fields() );
+	
+	//get values from submission for this processor
+	$values = $rocessor->get_values();
+	
+	/////////DO YOUR THING HERE -- Call 3rd party API, etc...
+	/** If you have an error -- break excution be returning here an array like this:
+		return array(
+			'note' => 'Something bad happened',
+			'type' => 'error'
+		);
+	**/
+	
+	/** Add values to data that will be cached between sessions **/
+	global $transdata;
+	$transdata[ $process_id ][ 'values' ] = $values;
+	
+	/** If validation passes DON'T RETURN ANYTHING! **/
 }
 
 
