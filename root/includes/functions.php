@@ -65,7 +65,8 @@ function {%= prefix %}_pre_process( $config, $form ) {
  * @return array
  */
 function {%= prefix %}_process( $config, $form ) {
-
+	//you can get entry ID here
+	$entry_id = Caldera_Forms::get_field_data( '_entry_id', $form );
 
 }
 
