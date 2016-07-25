@@ -1,5 +1,5 @@
 {
-  "name": "calderawp/cf-postmatic",
+  "name": "calderawp/{%= title %}",
   "description": "{%= description %}",
   "type": "wordpress-plugin",
   "keywords": [
