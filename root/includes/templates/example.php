@@ -6,6 +6,6 @@
  * @author    {%= author_name %} (email : {%= author_email %})
  * @license   GPL-2.0+
  * @link
- * @copyright 2015 {%= author_name %}
+ * @copyright 2016 {%= author_name %}
  */
 return array();
