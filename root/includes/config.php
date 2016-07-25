@@ -8,14 +8,11 @@
  * @link
  * @copyright 2015 {%= author_name %} for CalderaWP LLC
  */
-?>
 
 
-<div class="caldera-config-group">
-	<label for="id">
-		<?php _e('Something', '{%= text_domain %}'); ?>
-	</label>
-	<div class="caldera-config-field">
-		<input type="text" class="block-input field-config magic-tag-enabled" id="id" name="{{_name}}[id]" value="{{id}}">
-	</div>
-</div>
+
+if ( class_exists( 'Caldera_Forms_Processor_UI' ) ) {
+
+echo Caldera_Forms_Processor_UI::config_fields( {%= prefix %}_fields() );
+}
+

@@ -61,6 +61,9 @@ exports.template = function( grunt, init, done ) {
 		props.js_test_safe_name = props.js_safe_name === 'test' ? 'myTest' : props.js_safe_name;
 		props.js_safe_name_caps = props.js_safe_name.toUpperCase();
 
+
+		props.class_prefix = props.prefix.replace( 'cf', 'CF' );
+
 		props.text_domain = props.prefix.replace( '_', '-' );
 
 		// Files to copy and process

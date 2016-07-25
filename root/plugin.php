@@ -61,8 +61,8 @@ include {%= prefix_caps %}_PATH . 'includes/functions.php';
 //register text domain
 add_action( 'init', '{%= prefix %}_init_text_domain' );
 
-// add filter to register addon with Caldera Forms
-add_filter('caldera_forms_get_form_processors', '{%= prefix %}_register');
+//load up the processor
+add_action( 'caldera_forms_pre_load_processors', '{%= prefix %}_load' );
 
 // filter to initialize the license system
 add_action( 'admin_init', '{%= prefix %}_init_license' );
