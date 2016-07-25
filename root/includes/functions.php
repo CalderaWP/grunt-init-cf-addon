@@ -19,7 +19,7 @@
 function {%= prefix %}_load(){
 
 		{%= prefix %}_register_autload();
-		new {%= class_prefix %}_Processor( {%= prefix %}__config(), {%= prefix %}_fields(), '%= text_domain %}' );
+		new {%= class_prefix %}_Processor( {%= prefix %}_config(), {%= prefix %}_fields(), '%= text_domain %}' );
 
 }
 

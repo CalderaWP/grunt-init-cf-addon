@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Class {%= class_prefix %}_Processor the main processor class for {% title %}
 
@@ -9,7 +8,7 @@
  * @link
  * @copyright 2016 {%= author_name %}
  */
- */
+
 
 class {%= class_prefix %}_Processor extends Caldera_Forms_Processor_Processor {
 
